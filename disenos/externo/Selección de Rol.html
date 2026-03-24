@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f9f9fe",
+                        "secondary-fixed-dim": "#c6c6cb",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#46464b",
+                        "secondary-fixed": "#e3e2e7",
+                        "surface-variant": "#e2e2e7",
+                        "on-tertiary-fixed": "#002107",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-dim": "#d9dade",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2e3034",
+                        "surface-container-highest": "#e2e2e7",
+                        "surface-container": "#ededf2",
+                        "surface-container-high": "#e8e8ed",
+                        "inverse-on-surface": "#f0f0f5",
+                        "outline-variant": "#c1c6d7",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#008733",
+                        "on-surface": "#1a1c1f",
+                        "secondary-container": "#e0dfe4",
+                        "secondary": "#5d5e63",
+                        "outline": "#717786",
+                        "surface-tint": "#005bc1",
+                        "error": "#ba1a1a",
+                        "primary-container": "#0070eb",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#006b27",
+                        "on-surface-variant": "#414755",
+                        "tertiary-fixed": "#72fe88",
+                        "on-background": "#1a1c1f",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container-low": "#f3f3f8",
+                        "primary": "#0058bc",
+                        "on-secondary-container": "#626267",
+                        "inverse-primary": "#adc6ff",
+                        "on-primary-container": "#fefcff",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "on-error-container": "#93000a",
+                        "background": "#f9f9fe",
+                        "surface": "#f9f9fe",
+                        "on-secondary-fixed": "#1a1b1f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .clinical-mesh {
+            background-color: #f9f9fe;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(216, 226, 255, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(249, 249, 254, 1) 0px, transparent 50%);
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface clinical-mesh min-h-screen">
+    <!-- TopAppBar Section -->
+    <header
+        class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg shadow-[0_20px_40px_rgba(26,28,31,0.04)]">
+        <div class="flex items-center justify-between px-6 h-16 w-full max-w-screen-xl mx-auto">
+            <div class="flex items-center gap-4">
+                <button class="text-blue-600 dark:text-blue-400 active:scale-95 transition-transform duration-200">
+                    <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                </button>
+                <span
+                    class="font-['Manrope'] font-bold text-xl tracking-tight text-blue-700 dark:text-blue-400 font-extrabold tracking-tighter">VitaTrack</span>
+            </div>
+            <div class="flex gap-6">
+                <!-- Navigation placeholder per system logic, but suppressed for transactional/onboarding intent -->
+            </div>
+        </div>
+    </header>
+    <main class="pt-32 pb-20 px-6 max-w-screen-xl mx-auto flex flex-col items-center justify-center min-h-[795px]">
+        <!-- Headline Section -->
+        <div class="text-center mb-16 space-y-4">
+            <h1
+                class="font-headline font-bold text-4xl md:text-5xl lg:text-6xl text-on-surface tracking-tight leading-tight">
+                Selecciona tu perfil
+            </h1>
+            <p class="font-body text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto opacity-80">
+                Personalizaremos tu experiencia en VitaTrack según el rol que desempeñes en el cuidado de la salud.
+            </p>
+        </div>
+        <!-- Role Selection Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+            <!-- Patient Role Card -->
+            <button
+                class="group relative flex flex-col items-center p-12 bg-surface-container-lowest rounded-lg shadow-[0_20px_40px_rgba(26,28,31,0.04)] hover:shadow-[0_30px_60px_rgba(26,28,31,0.08)] transition-all duration-300 transform active:scale-[0.98] border border-outline-variant/10 text-left overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-500">
+                </div>
+                <div
+                    class="w-24 h-24 mb-8 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+                    <span class="material-symbols-outlined !text-5xl" data-icon="person">person</span>
+                </div>
+                <h3 class="font-headline font-bold text-2xl mb-4 text-on-surface">Soy Paciente</h3>
+                <p class="font-body text-on-surface-variant text-center leading-relaxed">
+                    Gestiona tu salud personal, realiza seguimiento de tus signos vitales y conecta con tus doctores de
+                    confianza.
+                </p>
+                <div class="mt-8 flex items-center gap-2 text-primary font-bold group-hover:gap-4 transition-all">
+                    <span>Comenzar ahora</span>
+                    <span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+                </div>
+            </button>
+            <!-- Doctor Role Card -->
+            <button
+                class="group relative flex flex-col items-center p-12 bg-surface-container-lowest rounded-lg shadow-[0_20px_40px_rgba(26,28,31,0.04)] hover:shadow-[0_30px_60px_rgba(26,28,31,0.08)] transition-all duration-300 transform active:scale-[0.98] border border-outline-variant/10 text-left overflow-hidden">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-500">
+                </div>
+                <div
+                    class="w-24 h-24 mb-8 rounded-2xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed-variant group-hover:scale-110 transition-transform duration-300">
+                    <span class="material-symbols-outlined !text-5xl"
+                        data-icon="medical_services">medical_services</span>
+                </div>
+                <h3 class="font-headline font-bold text-2xl mb-4 text-on-surface">Soy Doctor</h3>
+                <p class="font-body text-on-surface-variant text-center leading-relaxed">
+                    Accede al historial de tus pacientes, monitorea alertas en tiempo real y optimiza tus consultas
+                    médicas.
+                </p>
+                <div class="mt-8 flex items-center gap-2 text-tertiary font-bold group-hover:gap-4 transition-all">
+                    <span>Acceso profesional</span>
+                    <span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+                </div>
+            </button>
+        </div>
+        <!-- Auxiliary Info -->
+        <div class="mt-16 text-center space-y-4">
+            <p class="font-label text-outline uppercase tracking-widest text-[11px] font-bold">Seguridad de Grado Médico
+            </p>
+            <div
+                class="flex items-center justify-center gap-8 opacity-40 grayscale group-hover:grayscale-0 transition-all">
+                <span class="material-symbols-outlined text-3xl" data-icon="verified_user">verified_user</span>
+                <span class="material-symbols-outlined text-3xl" data-icon="encrypted">encrypted</span>
+                <span class="material-symbols-outlined text-3xl" data-icon="health_and_safety">health_and_safety</span>
+            </div>
+        </div>
+    </main>
+    <!-- Navigation Shell Suppressed per "Destination Rule" (Transactional/Onboarding) -->
+    <!-- Decorative Elements -->
+    <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+        <div class="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] bg-primary-fixed/20 blur-[120px] rounded-full"></div>
+        <div class="absolute -bottom-[10%] -right-[5%] w-[30%] h-[30%] bg-tertiary-fixed/20 blur-[100px] rounded-full">
+        </div>
+    </div>
+</body>
+
+</html>

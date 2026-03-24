@@ -12,22 +12,24 @@ export default function PacienteAlertasScreen() {
   const uid = useAuthStore((s) => s.session?.user?.id);
   const [items, setItems] = useState<Alerta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const cargar = useCallback(async () => {
+  const cargar = useCallback(async (isInitial = false) => {
     if (!uid || !supabaseConfigured) {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    if (isInitial) setLoading(true);
     const { data } = await listarAlertas(uid);
     setItems((data as Alerta[]) ?? []);
     setLoading(false);
+    setHasLoaded(true);
   }, [uid]);
 
   useFocusEffect(
     useCallback(() => {
-      cargar();
-    }, [cargar])
+      cargar(!hasLoaded);
+    }, [cargar, hasLoaded])
   );
 
   const marcar = async (a: Alerta) => {

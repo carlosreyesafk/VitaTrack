@@ -44,24 +44,29 @@ export async function generarYGuardarAlertasLocales(pacienteId: string, sintomaR
     sintomaReciente ? evaluarSintomasRepetidos(sintomaReciente, sintomaVeces) : null,
   ]);
 
-  for (const g of generadas) {
-    const { data: dup } = await supabase
-      .from("alertas")
-      .select("id")
-      .eq("paciente_id", pacienteId)
-      .eq("tipo", g.tipo)
-      .gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString())
-      .maybeSingle();
-    if (dup) continue;
+  if (generadas.length === 0) return;
 
-    await supabase.from("alertas").insert({
-      paciente_id: pacienteId,
-      tipo: g.tipo,
-      titulo: g.titulo,
-      mensaje: g.mensaje,
-      severidad: g.severidad,
-      generada_por: "local",
-    });
+  // Optimización: Pedir todas las alertas recientes del paciente de una vez
+  const { data: existentes } = await supabase
+    .from("alertas")
+    .select("tipo")
+    .eq("paciente_id", pacienteId)
+    .gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString());
+
+  const tiposExistentes = new Set((existentes ?? []).map((a) => a.tipo));
+  const nuevas = generadas.filter((g) => !tiposExistentes.has(g.tipo));
+
+  if (nuevas.length > 0) {
+    await supabase.from("alertas").insert(
+      nuevas.map((g) => ({
+        paciente_id: pacienteId,
+        tipo: g.tipo,
+        titulo: g.titulo,
+        mensaje: g.mensaje,
+        severidad: g.severidad,
+        generada_por: "local",
+      }))
+    );
   }
 }
 

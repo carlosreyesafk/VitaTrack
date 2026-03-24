@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>VitaTrack - Tu salud, siempre bajo control</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f9f9fe",
+                        "secondary-fixed-dim": "#c6c6cb",
+                        "primary-fixed": "#d8e2ff",
+                        "on-secondary-fixed-variant": "#46464b",
+                        "secondary-fixed": "#e3e2e7",
+                        "surface-variant": "#e2e2e7",
+                        "on-tertiary-fixed": "#002107",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-dim": "#d9dade",
+                        "on-primary-fixed": "#001a41",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#2e3034",
+                        "surface-container-highest": "#e2e2e7",
+                        "surface-container": "#ededf2",
+                        "surface-container-high": "#e8e8ed",
+                        "inverse-on-surface": "#f0f0f5",
+                        "outline-variant": "#c1c6d7",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#008733",
+                        "on-surface": "#1a1c1f",
+                        "secondary-container": "#e0dfe4",
+                        "secondary": "#5d5e63",
+                        "outline": "#717786",
+                        "surface-tint": "#005bc1",
+                        "error": "#ba1a1a",
+                        "primary-container": "#0070eb",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#006b27",
+                        "on-surface-variant": "#414755",
+                        "tertiary-fixed": "#72fe88",
+                        "on-background": "#1a1c1f",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container-low": "#f3f3f8",
+                        "primary": "#0058bc",
+                        "on-secondary-container": "#626267",
+                        "inverse-primary": "#adc6ff",
+                        "on-primary-container": "#fefcff",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "on-error-container": "#93000a",
+                        "background": "#f9f9fe",
+                        "surface": "#f9f9fe",
+                        "on-secondary-fixed": "#1a1b1f"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-headline {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .clinical-mesh {
+            background-color: #f9f9fe;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(216, 226, 255, 0.4) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(243, 243, 248, 1) 0px, transparent 50%);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center clinical-mesh overflow-hidden">
+    <main
+        class="relative w-full max-w-screen-xl px-6 py-12 md:py-24 flex flex-col items-center justify-center text-center">
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none">
+        </div>
+        <div class="z-10 flex flex-col items-center max-w-4xl">
+            <div class="mb-12 flex flex-col items-center">
+                <div
+                    class="w-16 h-16 bg-gradient-to-br from-primary to-primary-container rounded-2xl flex items-center justify-center shadow-lg mb-6 active:scale-95 transition-transform duration-200">
+                    <span class="material-symbols-outlined text-white text-4xl" data-icon="monitor_heart"
+                        style="font-variation-settings: 'FILL' 1;">monitor_heart</span>
+                </div>
+                <h2 class="text-primary font-headline font-extrabold tracking-tighter text-2xl mb-8">VitaTrack</h2>
+            </div>
+            <h1
+                class="font-headline font-extrabold text-5xl md:text-7xl lg:text-8xl text-on-surface leading-[1.1] tracking-tight mb-8">
+                Tu salud, siempre <span class="text-primary italic">bajo control</span>
+            </h1>
+            <p
+                class="font-body text-lg md:text-2xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-16 px-4">
+                Monitorea tus medicamentos, síntomas y seguimiento médico en un solo lugar. Una experiencia clínica
+                diseñada para tu bienestar.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 w-full max-w-md md:max-w-xl">
+                <button
+                    class="flex-1 h-[4.5rem] md:h-20 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold text-xl rounded-full shadow-[0_20px_40px_rgba(0,88,188,0.2)] hover:opacity-90 active:scale-95 transition-all duration-200">
+                    Iniciar sesión
+                </button>
+                <button
+                    class="flex-1 h-[4.5rem] md:h-20 bg-surface-container-lowest border-2 border-outline-variant/30 text-on-surface font-headline font-bold text-xl rounded-full hover:bg-surface-container-low active:scale-95 transition-all duration-200">
+                    Crear cuenta
+                </button>
+            </div>
+        </div>
+        <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl opacity-80">
+            <div
+                class="p-8 rounded-lg bg-surface-container-lowest shadow-[0_20px_40px_rgba(26,28,31,0.02)] border border-outline-variant/10 text-left transform md:-rotate-1">
+                <div class="text-primary mb-4">
+                    <span class="material-symbols-outlined text-3xl" data-icon="pill">pill</span>
+                </div>
+                <h3 class="font-headline font-bold text-lg mb-2 text-on-surface">Medicamentos</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Recordatorios inteligentes y gestión de
+                    inventario para tu tratamiento diario.</p>
+            </div>
+            <div
+                class="p-8 rounded-lg bg-surface-container-lowest shadow-[0_30px_60px_rgba(26,28,31,0.04)] border border-outline-variant/10 text-left z-20 scale-105">
+                <div class="text-tertiary mb-4">
+                    <span class="material-symbols-outlined text-3xl" data-icon="clinical_notes">clinical_notes</span>
+                </div>
+                <h3 class="font-headline font-bold text-lg mb-2 text-on-surface">Síntomas</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Registro detallado de tu evolución diaria
+                    para compartir con tus especialistas médicos.</p>
+            </div>
+            <div
+                class="p-8 rounded-lg bg-surface-container-lowest shadow-[0_20px_40px_rgba(26,28,31,0.02)] border border-outline-variant/10 text-left transform md:rotate-1">
+                <div class="text-primary mb-4">
+                    <span class="material-symbols-outlined text-3xl" data-icon="calendar_month">calendar_month</span>
+                </div>
+                <h3 class="font-headline font-bold text-lg mb-2 text-on-surface">Seguimiento</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed">Calendario centralizado de citas y reportes
+                    de salud automatizados en PDF.</p>
+            </div>
+        </div>
+        <div
+            class="absolute bottom-12 left-0 w-full flex justify-center items-center gap-8 opacity-40 grayscale pointer-events-none">
+            <div class="h-6 w-auto flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl" data-icon="verified_user">verified_user</span>
+                <span class="font-label text-xs uppercase tracking-[0.2em] font-bold">Protocolos Médicos</span>
+            </div>
+            <div class="h-6 w-auto flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
+                <span class="font-label text-xs uppercase tracking-[0.2em] font-bold">Privacidad SSL</span>
+            </div>
+        </div>
+    </main>
+    <div class="fixed top-0 right-0 w-1/3 h-screen pointer-events-none overflow-hidden hidden lg:block">
+        <div class="w-full h-full relative">
+            <img alt="Professional medical equipment in a clean bright clinical environment with soft natural lighting"
+                class="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-multiply"
+                data-alt="abstract close-up of high-end medical equipment in a clean bright clinical environment with soft natural blue lighting and shallow depth of field"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-x24i9V-RqVWua6rmn5Km-bzxflA7ESE5p2P7WWnasTJRTi_8cBmCEVvwH3FYx1EU63if_cBSRmZm7Cjy8HzAekg5d-rzsydupFjF0WOGghaoxNOh1n3loMYo8iFSseGddWWJBXYLqPAVdObCaLhCRjg15cLecqVjWxy9_LkVJbDLIorJtfz5A7gtDhIiug1l-_DABF8FCfl1B0_j47cFREWZ5ATj5gqF0ZISnUm2UBrQirq_pbuW_muiifUXg1_3vy-cLdbp86I" />
+            <div class="absolute inset-0 bg-gradient-to-l from-transparent via-surface to-surface"></div>
+        </div>
+    </div>
+</body>
+
+</html>

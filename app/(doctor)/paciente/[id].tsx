@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { Text, View, ActivityIndicator, Dimensions } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { Text, View, ActivityIndicator, Dimensions, Pressable, ScrollView } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LineChart } from "react-native-chart-kit";
-import { Card } from "@/components/ui/Card";
 import { Screen } from "@/components/ui/Screen";
+import { GradientButton } from "@/components/ui/GradientButton";
 import { obtenerPerfilPorId } from "@/services/perfil";
 import { adherenciaUltimosDias } from "@/services/medicamentos";
 import { listarSintomas } from "@/services/sintomas";
 import { listarSignos } from "@/services/signos";
 import type { Perfil, SignoVital, Sintoma } from "@/types";
+import Animated, { FadeInDown, FadeInRight, Layout } from "react-native-reanimated";
 
-const w = Dimensions.get("window").width - 40;
+const { width } = Dimensions.get("window");
+const chartWidth = width - 64;
 
 export default function DoctorPacienteDetalleScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const [perfil, setPerfil] = useState<Perfil | null>(null);
   const [adh, setAdh] = useState(0);
   const [sintomas, setSintomas] = useState<Sintoma[]>([]);
@@ -43,106 +47,144 @@ export default function DoctorPacienteDetalleScreen() {
     .reverse()
     .map((s) => Number(s.glucosa));
 
+  const ultimaPA = signos.find(s => s.presion_sistolica && s.presion_diastolica);
+
   if (loading || !perfil) {
     return (
-      <Screen>
+      <Screen withMesh>
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color="#0058bc" />
+          <ActivityIndicator color="#0058bc" size="large" />
         </View>
       </Screen>
     );
   }
 
   return (
-    <Screen scroll>
-      <View className="pb-4 pt-2">
-        <Text className="text-2xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
-          {perfil.nombre_completo}
-        </Text>
-        <Text className="mt-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-          Seguimiento · adherencia, síntomas y signos vitales
-        </Text>
-      </View>
-
-      <Card className="mb-4">
-        <Text className="text-xs uppercase text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
-          Adherencia estimada (30 días)
-        </Text>
-        <Text className="mt-2 text-4xl text-tertiary" style={{ fontFamily: "Manrope_800ExtraBold" }}>
-          {adh}%
-        </Text>
-        <Text className="text-sm text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-          Basada en registros de tomas frente a horarios configurados.
-        </Text>
-      </Card>
-
-      {glucosas.length >= 2 && (
-        <Card className="mb-4">
-          <Text className="mb-2 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
-            Evolución de glucosa
+    <Screen withMesh scroll className="px-0">
+      <View className="px-8 pt-6 pb-20">
+        {/* Header Section */}
+        <View className="mb-10">
+          <Pressable onPress={() => router.back()} className="mb-6">
+            <MaterialCommunityIcons name="arrow-left" size={28} color="#0058bc" />
+          </Pressable>
+          <Text className="font-label text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant mb-2">
+            Expediente Clínico
           </Text>
-          <LineChart
-            data={{
-              labels: glucosas.map((_, i) => `${i + 1}`),
-              datasets: [{ data: glucosas }],
-            }}
-            width={w}
-            height={200}
-            chartConfig={{
-              backgroundGradientFrom: "#ffffff",
-              backgroundGradientTo: "#ffffff",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 107, 39, ${opacity})`,
-              labelColor: () => "#414755",
-            }}
-            bezier
-            style={{ borderRadius: 16 }}
+          <Text className="font-headline text-4xl text-on-surface font-extrabold tracking-tight leading-tight">
+            {perfil.nombre_completo || "Paciente"}
+          </Text>
+          <Text className="mt-4 font-body text-on-surface-variant leading-relaxed opacity-80">
+            Resumen detallado de salud, adherencia y signos vitales.
+          </Text>
+        </View>
+
+        {/* Health Summary Bento Grid */}
+        <View className="flex-row gap-4 mb-8">
+          {/* Adherence Card */}
+          <Animated.View 
+            entering={FadeInDown.delay(100).duration(800)}
+            className="flex-1 bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10"
+          >
+            <View className="w-10 h-10 rounded-xl bg-tertiary/5 items-center justify-center mb-4">
+              <MaterialCommunityIcons name="calendar-check" size={20} color="#006b27" />
+            </View>
+            <Text className="text-on-surface-variant font-label text-[10px] uppercase tracking-widest mb-1">Adherencia</Text>
+            <View className="flex-row items-baseline">
+              <Text className="text-tertiary font-headline text-3xl font-extrabold">{adh}</Text>
+              <Text className="text-tertiary font-headline text-lg font-bold">%</Text>
+            </View>
+            <Text className="text-on-surface-variant text-[10px] opacity-60 mt-1">Últimos 30 días</Text>
+          </Animated.View>
+
+          {/* Latest BP Card */}
+          <Animated.View 
+            entering={FadeInDown.delay(200).duration(800)}
+            className="flex-1 bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10"
+          >
+            <View className="w-10 h-10 rounded-xl bg-error/5 items-center justify-center mb-4">
+              <MaterialCommunityIcons name="gauge" size={20} color="#ba1a1a" />
+            </View>
+            <Text className="text-on-surface-variant font-label text-[10px] uppercase tracking-widest mb-1">Presión</Text>
+            <Text className="text-on-surface font-headline text-2xl font-extrabold">
+              {ultimaPA ? `${ultimaPA.presion_sistolica}/${ultimaPA.presion_diastolica}` : "--/--"}
+            </Text>
+            <Text className="text-on-surface-variant text-[10px] opacity-60">mmHg</Text>
+          </Animated.View>
+        </View>
+
+        {/* Glucose chart for doctor */}
+        {glucosas.length >= 2 && (
+          <Animated.View 
+            entering={FadeInDown.delay(300).duration(800)}
+            className="bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10 mb-10 overflow-hidden"
+          >
+            <Text className="text-on-surface font-headline text-lg font-bold mb-6 px-1">Control de Glucosa</Text>
+            <LineChart
+              data={{
+                labels: [],
+                datasets: [{ data: glucosas }],
+              }}
+              width={chartWidth}
+              height={140}
+              withHorizontalLines={false}
+              withVerticalLines={false}
+              chartConfig={{
+                backgroundColor: "#ffffff",
+                backgroundGradientFrom: "#ffffff",
+                backgroundGradientTo: "#ffffff",
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 107, 39, ${opacity * 0.8})`,
+                labelColor: () => "transparent",
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "2",
+                  stroke: "#006b27"
+                }
+              }}
+              bezier
+              style={{ paddingRight: 0, paddingLeft: -20 }}
+            />
+          </Animated.View>
+        )}
+
+        {/* Symptoms Timeline */}
+        <View className="mb-10">
+          <Text className="font-headline text-2xl text-on-surface font-bold mb-6 px-2">Historial de Síntomas</Text>
+          {sintomas.length === 0 ? (
+            <View className="bg-surface-container p-8 rounded-[32px] border border-dashed border-outline-variant items-center">
+              <Text className="text-on-surface-variant text-sm font-body">Sin reportes recientes.</Text>
+            </View>
+          ) : (
+            <View className="gap-4">
+              {sintomas.map((s, idx) => (
+                <Animated.View 
+                  key={s.id} 
+                  entering={FadeInDown.delay(idx * 80).duration(600)}
+                  className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/5 shadow-sm"
+                >
+                  <Text className="text-on-surface font-headline text-base font-bold mb-1">{s.descripcion}</Text>
+                  <View className="flex-row justify-between items-center mt-2">
+                    <View className="bg-error/5 px-2 py-0.5 rounded-full">
+                      <Text className="text-error text-[10px] font-bold uppercase tracking-wider">Intensidad {s.intensidad}</Text>
+                    </View>
+                    <Text className="text-[10px] text-on-surface-variant opacity-60 font-body">
+                      {new Date(s.registrado_en).toLocaleDateString("es-DO", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                    </Text>
+                  </View>
+                </Animated.View>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Action Button */}
+        <View className="mt-4">
+          <GradientButton 
+            title="Generar Nueva Consulta" 
+            onPress={() => router.push(`/(doctor)/paciente/consulta/${id}` as any)} 
           />
-        </Card>
-      )}
-
-      <Text className="mb-2 text-lg text-on-surface" style={{ fontFamily: "Inter_600SemiBold" }}>
-        Historial de síntomas
-      </Text>
-      {sintomas.length === 0 ? (
-        <Card className="mb-4">
-          <Text className="text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-            Sin síntomas registrados recientemente.
-          </Text>
-        </Card>
-      ) : (
-        sintomas.map((s) => (
-          <Card key={s.id} className="mb-3">
-            <Text className="text-on-surface" style={{ fontFamily: "Inter_500Medium" }}>
-              {s.descripcion}
-            </Text>
-            <Text className="text-xs text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-              Intensidad {s.intensidad}/10 · {new Date(s.registrado_en).toLocaleString("es-DO")}
-            </Text>
-          </Card>
-        ))
-      )}
-
-      <Text className="mb-2 text-lg text-on-surface" style={{ fontFamily: "Inter_600SemiBold" }}>
-        Signos vitales recientes
-      </Text>
-      {signos.length === 0 ? (
-        <Card>
-          <Text className="text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-            Sin lecturas recientes.
-          </Text>
-        </Card>
-      ) : (
-        signos.slice(0, 8).map((sg) => (
-          <Card key={sg.id} className="mb-3">
-            <Text className="text-sm text-on-surface" style={{ fontFamily: "Inter_400Regular" }}>
-              {new Date(sg.registrado_en).toLocaleString("es-DO")} · PA {sg.presion_sistolica ?? "—"}/
-              {sg.presion_diastolica ?? "—"} · Glu {sg.glucosa ?? "—"} · Temp {sg.temperatura ?? "—"} · Pulso{" "}
-              {sg.pulso ?? "—"}
-            </Text>
-          </Card>
-        ))
-      )}
+        </View>
+      </View>
     </Screen>
   );
 }

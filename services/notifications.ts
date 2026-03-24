@@ -1,5 +1,6 @@
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import Constants, { AppOwnership } from "expo-constants";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -11,6 +12,14 @@ Notifications.setNotificationHandler({
 });
 
 export async function registrarCanalYPermisos() {
+  // Evitar errores y warnings en Expo Go (SDK 53+ no soporta remote notifications en Go)
+  if (Constants.appOwnership === AppOwnership.Expo || __DEV__) {
+    console.info("Info: Notificaciones remotas deshabilitadas en Expo Go/Dev para evitar warnings de SDK 53+.");
+    // Aún así podemos intentar registrar el canal local si no causa crash, 
+    // pero para ir a lo seguro en el demo, retornamos false si es Expo Go.
+    if (Constants.appOwnership === AppOwnership.Expo) return false;
+  }
+
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
       name: "Recordatorios",

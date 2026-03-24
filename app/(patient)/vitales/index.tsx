@@ -1,17 +1,17 @@
 import { useCallback, useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
-import { Pressable, Text, View, ActivityIndicator, Dimensions } from "react-native";
-import { HeartPulse, Pill, Plus } from "lucide-react-native";
-
+import { Pressable, Text, View, ActivityIndicator, Dimensions, ScrollView } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LineChart } from "react-native-chart-kit";
-import { Card } from "@/components/ui/Card";
 import { Screen } from "@/components/ui/Screen";
 import { useAuthStore } from "@/store/authStore";
 import { listarSignos } from "@/services/signos";
 import type { SignoVital } from "@/types";
 import { supabaseConfigured } from "@/lib/supabase";
+import Animated, { FadeInDown, FadeInRight, Layout } from "react-native-reanimated";
 
-const w = Dimensions.get("window").width - 40;
+const { width } = Dimensions.get("window");
+const chartWidth = width - 64;
 
 export default function VitalesIndexScreen() {
   const router = useRouter();
@@ -42,144 +42,184 @@ export default function VitalesIndexScreen() {
     .reverse()
     .map((s) => Number(s.glucosa));
 
+  const ultimaPA = items.find(s => s.presion_sistolica && s.presion_diastolica);
+  const ultimoPulso = items.find(s => s.pulso != null);
+  const ultimaGlucosa = items.find(s => s.glucosa != null);
+
   if (loading) {
     return (
-      <Screen>
+      <Screen withMesh>
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color="#0058bc" />
+          <ActivityIndicator color="#0058bc" size="large" />
         </View>
       </Screen>
     );
   }
 
   return (
-    <Screen scroll className="bg-surface">
-      <View className="pb-6 pt-8 px-2 flex-row justify-between items-end">
-        <View className="flex-1">
-          <Text className="text-xs uppercase tracking-widest text-on-surface-variant" style={{ fontFamily: "Inter_600SemiBold" }}>
-            Seguimiento
-          </Text>
-          <Text className="mt-2 text-4xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
-            Vitales
-          </Text>
-        </View>
-        <Pressable
-          onPress={() => router.push("/(patient)/vitales/nuevo")}
-          className="bg-primary px-5 py-3 rounded-2xl shadow-elevated active:opacity-90"
-          style={{ shadowColor: "#2563eb", shadowOpacity: 0.2 }}
-        >
-          <Text className="text-white text-sm" style={{ fontFamily: "Inter_600SemiBold" }}>+ Nuevo</Text>
-        </Pressable>
-      </View>
-
-      {glucosas.length >= 2 && (
-        <Card className="mb-4">
-          <Text className="mb-2 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
-            Tendencia de glucosa (últimas lecturas)
-          </Text>
-          <LineChart
-            data={{
-              labels: glucosas.map((_, i) => `${i + 1}`),
-              datasets: [{ data: glucosas.length ? glucosas : [0] }],
-            }}
-            width={w}
-            height={200}
-            chartConfig={{
-              backgroundGradientFrom: "#ffffff",
-              backgroundGradientTo: "#ffffff",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 88, 188, ${opacity})`,
-              labelColor: () => "#414755",
-            }}
-            bezier
-            style={{ borderRadius: 16 }}
-          />
-        </Card>
-      )}
-
-      {items.length === 0 ? (
-        <View className="mt-12 items-center px-8">
-          <View className="h-20 w-20 items-center justify-center rounded-3xl bg-surface-low mb-6">
-            <HeartPulse color="#94a3b8" size={40} />
+    <Screen withMesh scroll className="px-0">
+      <View className="px-8 pt-6 pb-20">
+        {/* Header Section */}
+        <View className="mb-10">
+          <Pressable onPress={() => router.back()} className="mb-6">
+            <MaterialCommunityIcons name="arrow-left" size={28} color="#0058bc" />
+          </Pressable>
+          <View className="flex-row justify-between items-end">
+            <View className="flex-1 mr-4">
+              <Text className="font-label text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant mb-2">
+                Monitorización
+              </Text>
+              <Text className="font-headline text-4xl text-on-surface font-extrabold tracking-tight leading-tight">
+                Signos Vitales
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => router.push("/(patient)/vitales/nuevo")}
+              className="w-14 h-14 bg-primary rounded-2xl items-center justify-center shadow-lg shadow-primary/20"
+            >
+              <MaterialCommunityIcons name="plus" size={32} color="white" />
+            </Pressable>
           </View>
-          <Text className="text-lg text-on-surface text-center" style={{ fontFamily: "Inter_600SemiBold" }}>
-            Sin registros aún
-          </Text>
-          <Text className="mt-2 text-sm text-on-surface-variant text-center leading-5" style={{ fontFamily: "Inter_400Regular" }}>
-            Toma tus medidas de presión, glucosa o pulso y regístralas para ver tu progreso.
-          </Text>
         </View>
-      ) : (
-        <View className="px-1 pb-8">
-          {items.map((sg) => (
-            <Card key={sg.id} className="mb-4">
-              <View className="flex-row justify-between items-center mb-4">
-                <Text
-                  className="text-[10px] uppercase tracking-widest text-on-surface-variant"
-                  style={{ fontFamily: "Inter_600SemiBold" }}
-                >
-                  {new Date(sg.registrado_en).toLocaleDateString("es-DO", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </Text>
-                <Text className="text-[10px] text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-                  {new Date(sg.registrado_en).toLocaleTimeString("es-DO", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Text>
-              </View>
 
-              <View className="flex-row flex-wrap gap-4">
-                {sg.presion_sistolica && sg.presion_diastolica && (
-                  <View className="flex-1 min-w-[45%]">
-                    <Text
-                      className="text-[10px] uppercase text-on-surface-variant mb-1"
-                      style={{ fontFamily: "Inter_500Medium" }}
-                    >
-                      Presión
-                    </Text>
-                    <Text className="text-xl text-on-surface" style={{ fontFamily: "Manrope_700Bold" }}>
-                      {sg.presion_sistolica}/{sg.presion_diastolica}
-                    </Text>
-                    <Text className="text-[10px] text-on-surface-variant">mmHg</Text>
-                  </View>
-                )}
-                {sg.glucosa != null && (
-                  <View className="flex-1 min-w-[45%]">
-                    <Text
-                      className="text-[10px] uppercase text-on-surface-variant mb-1"
-                      style={{ fontFamily: "Inter_500Medium" }}
-                    >
-                      Glucosa
-                    </Text>
-                    <Text className="text-xl text-on-surface" style={{ fontFamily: "Manrope_700Bold" }}>
-                      {sg.glucosa}
-                    </Text>
-                    <Text className="text-[10px] text-on-surface-variant">mg/dL</Text>
-                  </View>
-                )}
-                {sg.pulso != null && (
-                  <View className="flex-1 min-w-[45%]">
-                    <Text
-                      className="text-[10px] uppercase text-on-surface-variant mb-1"
-                      style={{ fontFamily: "Inter_500Medium" }}
-                    >
-                      Pulso
-                    </Text>
-                    <Text className="text-xl text-on-surface" style={{ fontFamily: "Manrope_700Bold" }}>
-                      {sg.pulso}
-                    </Text>
-                    <Text className="text-[10px] text-on-surface-variant">lpm</Text>
-                  </View>
-                )}
-              </View>
-            </Card>
-          ))}
+        {/* Latest Metrics Bento Grid */}
+        <View className="flex-row gap-4 mb-8">
+          {/* BP Card */}
+          <Animated.View 
+            entering={FadeInDown.delay(100).duration(800)}
+            className="flex-1 bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10"
+          >
+            <View className="w-10 h-10 rounded-xl bg-error/5 items-center justify-center mb-4">
+              <MaterialCommunityIcons name="gauge" size={20} color="#ba1a1a" />
+            </View>
+            <Text className="text-on-surface-variant font-label text-[10px] uppercase tracking-widest mb-1">Presión</Text>
+            <Text className="text-on-surface font-headline text-2xl font-extrabold">
+              {ultimaPA ? `${ultimaPA.presion_sistolica}/${ultimaPA.presion_diastolica}` : "--/--"}
+            </Text>
+            <Text className="text-on-surface-variant text-[10px] opacity-60">mmHg</Text>
+          </Animated.View>
+
+          {/* Pulse Card */}
+          <Animated.View 
+            entering={FadeInDown.delay(200).duration(800)}
+            className="flex-1 bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10"
+          >
+            <View className="w-10 h-10 rounded-xl bg-primary/5 items-center justify-center mb-4">
+              <MaterialCommunityIcons name="heart-pulse" size={20} color="#0058bc" />
+            </View>
+            <Text className="text-on-surface-variant font-label text-[10px] uppercase tracking-widest mb-1">Pulso</Text>
+            <Text className="text-on-surface font-headline text-2xl font-extrabold">
+              {ultimoPulso?.pulso ?? "--"}
+            </Text>
+            <Text className="text-on-surface-variant text-[10px] opacity-60">LPM</Text>
+          </Animated.View>
         </View>
-      )}
+
+        {/* Glucose Chart Section */}
+        {glucosas.length >= 2 && (
+          <Animated.View 
+            entering={FadeInDown.delay(300).duration(800)}
+            className="bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10 mb-8 overflow-hidden"
+          >
+            <View className="flex-row justify-between items-center mb-6">
+              <View>
+                <Text className="text-on-surface font-headline text-lg font-bold">Tendencia Glucosa</Text>
+                <Text className="text-on-surface-variant text-xs opacity-60">Últimas 8 lecturas</Text>
+              </View>
+              <View className="bg-tertiary/10 px-3 py-1.5 rounded-full">
+                <Text className="text-tertiary text-[10px] font-bold uppercase tracking-wider">
+                  {ultimaGlucosa?.glucosa} mg/dL
+                </Text>
+              </View>
+            </View>
+            
+            <LineChart
+              data={{
+                labels: [],
+                datasets: [{ data: glucosas }],
+              }}
+              width={chartWidth}
+              height={140}
+              withHorizontalLines={false}
+              withVerticalLines={false}
+              withDots={true}
+              withInnerLines={false}
+              chartConfig={{
+                backgroundColor: "#ffffff",
+                backgroundGradientFrom: "#ffffff",
+                backgroundGradientTo: "#ffffff",
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 88, 188, ${opacity * 0.8})`,
+                labelColor: () => "transparent",
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "2",
+                  stroke: "#0058bc"
+                }
+              }}
+              bezier
+              style={{ paddingRight: 0, paddingLeft: -20 }}
+            />
+          </Animated.View>
+        )}
+
+        {/* History List */}
+        <View className="mb-6">
+          <Text className="font-headline text-2xl text-on-surface font-bold mb-6 px-2">Historial</Text>
+          
+          {items.length === 0 ? (
+            <View className="bg-surface-container-lowest p-12 rounded-[32px] border border-dashed border-outline-variant items-center justify-center">
+              <MaterialCommunityIcons name="chart-line-variant" size={48} color="#94a3b8" />
+              <Text className="text-on-surface-variant text-sm font-body text-center mt-4">
+                No hay registros disponibles.{"\n"}Inicia tu monitoreo hoy.
+              </Text>
+            </View>
+          ) : (
+            <View className="gap-4">
+              {items.map((sg, idx) => (
+                <Animated.View 
+                  key={sg.id} 
+                  entering={FadeInDown.delay(idx * 50).duration(500)}
+                  layout={Layout.springify()}
+                  className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/10 shadow-sm"
+                >
+                  <View className="flex-row justify-between items-center mb-4">
+                    <View className="bg-surface-container px-3 py-1 rounded-full">
+                      <Text className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+                        {new Date(sg.registrado_en).toLocaleDateString("es-DO", { day: "numeric", month: "long" })}
+                      </Text>
+                    </View>
+                    <Text className="text-[10px] text-on-surface-variant opacity-60 font-body">
+                      {new Date(sg.registrado_en).toLocaleTimeString("es-DO", { hour: "2-digit", minute: "2-digit" })}
+                    </Text>
+                  </View>
+
+                  <View className="flex-row gap-6">
+                    {sg.presion_sistolica && (
+                      <View>
+                        <Text className="text-[9px] uppercase tracking-widest text-on-surface-variant mb-1">Presión</Text>
+                        <Text className="text-base font-bold text-on-surface">{sg.presion_sistolica}/{sg.presion_diastolica}</Text>
+                      </View>
+                    )}
+                    {sg.glucosa && (
+                      <View>
+                        <Text className="text-[9px] uppercase tracking-widest text-on-surface-variant mb-1">Glucosa</Text>
+                        <Text className="text-base font-bold text-on-surface">{sg.glucosa}</Text>
+                      </View>
+                    )}
+                    {sg.pulso && (
+                      <View>
+                        <Text className="text-[9px] uppercase tracking-widest text-on-surface-variant mb-1">Pulso</Text>
+                        <Text className="text-base font-bold text-on-surface">{sg.pulso}</Text>
+                      </View>
+                    )}
+                  </View>
+                </Animated.View>
+              ))}
+            </View>
+          )}
+        </View>
+      </View>
     </Screen>
   );
 }

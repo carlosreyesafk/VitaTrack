@@ -1,36 +1,38 @@
 import { useCallback, useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
-import { Alert, Pressable, Text, View, ActivityIndicator } from "react-native";
-import { Plus } from "lucide-react-native";
-import { Card } from "@/components/ui/Card";
+import { Alert, Pressable, Text, View, ActivityIndicator, ScrollView } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { Screen } from "@/components/ui/Screen";
 import { useAuthStore } from "@/store/authStore";
 import { eliminarMedicamento, listarMedicamentos, registrarToma } from "@/services/medicamentos";
 import type { Medicamento } from "@/types";
 import { supabaseConfigured } from "@/lib/supabase";
+import Animated, { FadeInDown, Layout } from "react-native-reanimated";
 
 export default function MedicamentosListScreen() {
   const router = useRouter();
   const uid = useAuthStore((s) => s.session?.user?.id);
   const [items, setItems] = useState<Medicamento[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const cargar = useCallback(async () => {
+  const cargar = useCallback(async (isInitial = false) => {
     if (!uid || !supabaseConfigured) {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    if (isInitial) setLoading(true);
     const { data } = await listarMedicamentos(uid);
     setItems(data ?? []);
     setLoading(false);
+    setHasLoaded(true);
   }, [uid]);
 
   useFocusEffect(
     useCallback(() => {
-      cargar();
-    }, [cargar])
+      cargar(!hasLoaded);
+    }, [cargar, hasLoaded])
   );
 
   const marcarTomado = async (m: Medicamento) => {
@@ -42,15 +44,15 @@ export default function MedicamentosListScreen() {
       Alert.alert("No se pudo registrar", error.message);
       return;
     }
-    Alert.alert("Listo", "Toma registrada. Sigue tu horario lo mejor que puedas.");
+    Alert.alert("Listo", "Toma registrada exitosamente.");
     cargar();
   };
 
   const borrar = (m: Medicamento) => {
-    Alert.alert("¿Quitar medicamento?", `Se archivará «${m.nombre}» de tu lista.`, [
+    Alert.alert("¿Archivar medicamento?", `Se quitará «${m.nombre}» de tu lista activa.`, [
       { text: "Cancelar", style: "cancel" },
       {
-        text: "Quitar",
+        text: "Archivar",
         style: "destructive",
         onPress: async () => {
           const { error } = await eliminarMedicamento(m.id);
@@ -63,69 +65,111 @@ export default function MedicamentosListScreen() {
 
   if (loading) {
     return (
-      <Screen>
+      <Screen withMesh>
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color="#0058bc" />
+          <ActivityIndicator color="#0058bc" size="large" />
         </View>
       </Screen>
     );
   }
 
   return (
-    <Screen scroll>
-      <View className="flex-row items-center justify-between pb-4 pt-2">
-        <Text className="text-2xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
-          Tus medicamentos
-        </Text>
-        <Pressable
-          onPress={() => router.push("/(patient)/(tabs)/medicamentos/nuevo")}
-          className="h-12 w-12 items-center justify-center rounded-full bg-primary-fixed"
-        >
-          <Plus color="#0058bc" size={26} />
-        </Pressable>
-      </View>
-
-      {items.length === 0 ? (
-        <Card>
-          <Text className="text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-            Aún no tienes medicamentos. Agrega el primero con el botón + y pon los horarios que te indicó tu médico o
-            médica.
+    <Screen withMesh scroll className="px-0">
+      <View className="px-8 pt-6 pb-20">
+        {/* Header Section */}
+        <View className="mb-10">
+          <Text className="font-label text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant mb-2">
+            Tratamientos
           </Text>
-          <View className="mt-4">
-            <GradientButton title="Agregar medicamento" onPress={() => router.push("/(patient)/(tabs)/medicamentos/nuevo")} />
-          </View>
-        </Card>
-      ) : (
-        items.map((m) => (
-          <Card key={m.id} className="mb-4">
-            <Text className="text-lg text-on-surface" style={{ fontFamily: "Inter_600SemiBold" }}>
-              {m.nombre}
-            </Text>
-            <Text className="text-sm text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-              {m.dosis} · {m.frecuencia}
-            </Text>
-            <Text className="mt-2 text-xs text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-              Horarios: {(m.horarios ?? []).join(", ") || "Sin horario"}
-            </Text>
-            <View className="mt-4 flex-row flex-wrap gap-2">
-              <View className="min-w-[48%] flex-1">
-                <GradientButton title="Lo tomé" onPress={() => marcarTomado(m)} />
-              </View>
-              <Pressable
-                onPress={() => router.push(`/(patient)/(tabs)/medicamentos/${m.id}`)}
-                className="rounded-2xl bg-surface-high px-4 py-3"
-              >
-                <Text style={{ fontFamily: "Inter_600SemiBold" }}>Editar</Text>
-              </Pressable>
-              <Pressable onPress={() => borrar(m)} className="rounded-2xl bg-error-container px-4 py-3">
-                <Text className="text-error" style={{ fontFamily: "Inter_600SemiBold" }}>
-                  Quitar
-                </Text>
-              </Pressable>
+          <View className="flex-row justify-between items-end">
+            <View className="flex-1 mr-4">
+              <Text className="font-headline text-4xl text-on-surface font-extrabold tracking-tight leading-tight">
+                Mis Medicinas
+              </Text>
             </View>
-          </Card>
-        ))
-      )}
+            <Pressable
+              onPress={() => router.push("/(patient)/(tabs)/medicamentos/nuevo" as any)}
+              className="w-14 h-14 bg-primary rounded-2xl items-center justify-center shadow-lg shadow-primary/20"
+            >
+              <MaterialCommunityIcons name="plus" size={32} color="white" />
+            </Pressable>
+          </View>
+          <Text className="mt-4 font-body text-on-surface-variant leading-relaxed opacity-80">
+            Gestiona tus tratamientos y mantén un control riguroso de tus tomas diarias.
+          </Text>
+        </View>
+
+        {/* Medications List */}
+        {items.length === 0 ? (
+          <Animated.View entering={FadeInDown} className="bg-surface-container-lowest p-8 rounded-[32px] border border-dashed border-outline-variant items-center">
+            <View className="w-16 h-16 rounded-full bg-surface-container items-center justify-center mb-4">
+              <MaterialCommunityIcons name="pill" size={32} color="#717786" />
+            </View>
+            <Text className="text-on-surface font-headline font-bold text-lg mb-2 text-center">Sin medicamentos activos</Text>
+            <Text className="text-on-surface-variant text-center font-body mb-6">
+              Agrega tu primer tratamiento para comenzar el seguimiento.
+            </Text>
+            <GradientButton 
+              title="Agregar ahora" 
+              onPress={() => router.push("/(patient)/(tabs)/medicamentos/nuevo" as any)} 
+            />
+          </Animated.View>
+        ) : (
+          <View className="gap-6">
+            {items.map((m, idx) => (
+              <Animated.View 
+                key={m.id} 
+                entering={FadeInDown.delay(idx * 100).duration(600)}
+                layout={Layout.springify()}
+                className="bg-surface-container-lowest rounded-[32px] p-6 shadow-cloud border border-outline-variant/10"
+              >
+                <View className="flex-row justify-between items-start mb-6">
+                  <View className="flex-row gap-4 items-center flex-1">
+                    <View className="w-14 h-14 rounded-2xl bg-primary/5 items-center justify-center">
+                      <MaterialCommunityIcons name="pill" size={28} color="#0058bc" />
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-on-surface font-headline text-xl font-bold" numberOfLines={1}>
+                        {m.nombre}
+                      </Text>
+                      <Text className="text-on-surface-variant text-sm font-body">
+                        {m.dosis} · {m.frecuencia}
+                      </Text>
+                    </View>
+                  </View>
+                  <Pressable onPress={() => borrar(m)} className="p-2">
+                    <MaterialCommunityIcons name="close" size={20} color="#717786" />
+                  </Pressable>
+                </View>
+
+                {/* Schedule info */}
+                <View className="bg-surface-container/50 rounded-2xl p-4 mb-6 flex-row items-center gap-3">
+                  <MaterialCommunityIcons name="clock-outline" size={18} color="#0058bc" />
+                  <Text className="flex-1 text-on-surface-variant text-xs font-body">
+                    Horarios: {(m.horarios ?? []).join(", ") || "Sin horario definido"}
+                  </Text>
+                </View>
+
+                {/* Actions */}
+                <View className="flex-row gap-3">
+                  <View className="flex-1">
+                    <GradientButton 
+                      title="Registrar toma" 
+                      onPress={() => marcarTomado(m)} 
+                    />
+                  </View>
+                  <Pressable 
+                    onPress={() => router.push(`/(patient)/(tabs)/medicamentos/${m.id}` as any)}
+                    className="w-14 h-14 bg-surface-container rounded-2xl items-center justify-center border border-outline-variant/10"
+                  >
+                    <MaterialCommunityIcons name="pencil-outline" size={22} color="#0058bc" />
+                  </Pressable>
+                </View>
+              </Animated.View>
+            ))}
+          </View>
+        )}
+      </View>
     </Screen>
   );
 }

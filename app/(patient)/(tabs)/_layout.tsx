@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
-import { Home, Pill, Activity, Bell, User } from "lucide-react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View } from "react-native";
 
 export default function PatientTabsLayout() {
   return (
@@ -9,50 +10,86 @@ export default function PatientTabsLayout() {
         tabBarActiveTintColor: "#0058bc",
         tabBarInactiveTintColor: "#717786",
         tabBarStyle: {
-          backgroundColor: "rgba(249,249,254,0.92)",
+          backgroundColor: "#f9f9fe",
           borderTopWidth: 0,
-          elevation: 0,
-          height: 64,
-          paddingBottom: 8,
+          elevation: 10,
+          height: 84,
+          paddingBottom: 24,
+          paddingTop: 8,
+          shadowColor: "#1a1c1f",
+          shadowOpacity: 0.1,
+          shadowRadius: 20,
         },
-        tabBarLabelStyle: { fontFamily: "Inter_500Medium", fontSize: 11 },
+        tabBarLabelStyle: { 
+          fontFamily: "Inter_600SemiBold", 
+          fontSize: 10,
+          marginTop: -4
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Inicio",
-          tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <MaterialCommunityIcons 
+              name={focused ? "home" : "home-outline"} 
+              color={color} 
+              size={28} 
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="medicamentos"
         options={{
-          title: "Medicamentos",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => <Pill color={color} size={size} />,
+          title: "Medicina",
+          tabBarIcon: ({ color, size, focused }) => (
+            <MaterialCommunityIcons 
+              name={focused ? "pill" : "pill"} 
+              color={color} 
+              size={28} 
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="sintomas"
         options={{
-          title: "Síntomas",
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => <Activity color={color} size={size} />,
+          title: "Evolución",
+          tabBarIcon: ({ color, size, focused }) => (
+            <MaterialCommunityIcons 
+              name={focused ? "chart-timeline-variant" : "chart-timeline-variant"} 
+              color={color} 
+              size={28} 
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="alertas"
         options={{
           title: "Alertas",
-          tabBarIcon: ({ color, size }) => <Bell color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <MaterialCommunityIcons 
+              name={focused ? "bell" : "bell-outline"} 
+              color={color} 
+              size={28} 
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="perfil"
         options={{
           title: "Perfil",
-          tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <MaterialCommunityIcons 
+              name={focused ? "account" : "account-outline"} 
+              color={color} 
+              size={28} 
+            />
+          ),
         }}
       />
     </Tabs>
