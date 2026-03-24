@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VitaTrack - Medication Management</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface-variant": "#414755",
+                        "surface-variant": "#e2e2e7",
+                        "on-secondary-fixed": "#1a1b1f",
+                        "on-primary-container": "#fefcff",
+                        "on-surface": "#1a1c1f",
+                        "secondary-container": "#e0dfe4",
+                        "surface-container-high": "#e8e8ed",
+                        "surface-bright": "#f9f9fe",
+                        "tertiary-fixed-dim": "#53e16f",
+                        "surface-dim": "#d9dade",
+                        "surface": "#f9f9fe",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c1c6d7",
+                        "surface-container": "#ededf2",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f3f3f8",
+                        "on-tertiary-fixed-variant": "#00531c",
+                        "on-primary-fixed": "#001a41",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#e3e2e7",
+                        "tertiary": "#006b27",
+                        "outline": "#717786",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#005bc1",
+                        "on-tertiary-container": "#f7fff2",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-primary": "#adc6ff",
+                        "inverse-surface": "#2e3034",
+                        "inverse-on-surface": "#f0f0f5",
+                        "secondary-fixed-dim": "#c6c6cb",
+                        "on-tertiary-fixed": "#002107",
+                        "on-background": "#1a1c1f",
+                        "secondary": "#5d5e63",
+                        "tertiary-fixed": "#72fe88",
+                        "on-secondary-container": "#626267",
+                        "primary-container": "#0070eb",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#46464b",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#008733",
+                        "primary-fixed-dim": "#adc6ff",
+                        "surface-container-highest": "#e2e2e7",
+                        "background": "#f9f9fe",
+                        "primary": "#0058bc"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .glass-header {
+            background: rgba(249, 249, 254, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        
+        .adherence-gradient {
+            background: linear-gradient(180deg, rgba(0, 88, 188, 0.05) 0%, rgba(0, 88, 188, 0) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f9f9fe]/80 dark:bg-slate-950/80 backdrop-blur-md shadow-[0_20px_40px_rgba(26,28,31,0.04)] h-16 flex items-center justify-between px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-fixed">
+<img alt="Doctor profile" data-alt="professional portrait of a friendly female doctor in a clinical setting with warm soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuG0QJv9btUiETKeX10A-me61QUOgX3QTVJSpCwMYhfrrhnKOpgCxlgucc0CLKq4D_AEAI7TTQPstnjquo4Okt1fCl1WVNXeGQisS5b0VSdzIwXWh97sKNIMZodc6L4js5mBrSRSkKRKsYYIA1OD4I03zkCIRopyzcpOLDLXhFkEmuNcYX8vmo3j96aygBowVkyYcB4iCM08pXTpMlbX81uZxiKSSC9-31k6f9xetjo8bk31i1itanEMqSSUFhZ0nobisex5HOs-M"/>
+</div>
+<h1 class="text-[#007AFF] font-['Manrope'] font-extrabold text-xl">VitaTrack</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#007AFF] hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-4xl mx-auto space-y-8">
+<!-- Weekly Adherence Section -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline font-bold text-headline-md tracking-tight">Adherence</h2>
+<p class="text-on-surface-variant text-body-lg">Last 7 days performance</p>
+</div>
+<div class="text-right">
+<span class="text-primary font-headline font-bold text-3xl">92%</span>
+<p class="text-label-md text-tertiary">Excellent</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_20px_40px_rgba(26,28,31,0.04)] adherence-gradient">
+<div class="flex justify-between items-end h-32 gap-2">
+<!-- Chart Bars -->
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg" style="height: 85%;"></div>
+<span class="text-label-md text-outline">Mon</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg" style="height: 100%;"></div>
+<span class="text-label-md text-outline">Tue</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg" style="height: 60%;"></div>
+<span class="text-label-md text-outline">Wed</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg" style="height: 90%;"></div>
+<span class="text-label-md text-outline">Thu</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg" style="height: 95%;"></div>
+<span class="text-label-md text-outline">Fri</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary rounded-t-lg" style="height: 80%;"></div>
+<span class="text-label-md text-outline">Sat</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div class="w-full bg-primary-container rounded-t-lg" style="height: 40%;"></div>
+<span class="text-label-md text-outline">Sun</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Daily Medications -->
+<section class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="font-headline font-bold text-headline-md tracking-tight">Today's Schedule</h2>
+<button class="text-primary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+<span>Add New</span>
+</button>
+</div>
+<div class="space-y-4">
+<!-- Med Card 1 -->
+<div class="group relative bg-surface-container-lowest rounded-lg p-6 flex items-center justify-between transition-all hover:translate-x-1">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="pill">pill</span>
+</div>
+<div>
+<p class="text-label-md font-semibold text-primary uppercase tracking-wider">08:00 AM</p>
+<h3 class="font-headline font-bold text-title-lg">Lisinopril</h3>
+<p class="text-on-surface-variant text-body-lg">10mg • 1 tablet</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-14 h-14 rounded-full bg-tertiary text-white flex items-center justify-center shadow-lg transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="check" style="font-variation-settings: 'wght' 700;">check</span>
+</button>
+</div>
+</div>
+<!-- Med Card 2 -->
+<div class="group relative bg-surface-container-low rounded-lg p-6 flex items-center justify-between opacity-80 border-l-4 border-primary">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-2xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-3xl" data-icon="vaccines">vaccines</span>
+</div>
+<div>
+<p class="text-label-md font-semibold text-outline uppercase tracking-wider">12:30 PM</p>
+<h3 class="font-headline font-bold text-title-lg text-on-surface">Insulin Glargine</h3>
+<p class="text-on-surface-variant text-body-lg">15 Units • Injection</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-14 h-8 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+<!-- Med Card 3 -->
+<div class="group relative bg-surface-container-lowest rounded-lg p-6 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-2xl bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-3xl" data-icon="airlight">air</span>
+</div>
+<div>
+<p class="text-label-md font-semibold text-primary uppercase tracking-wider">04:00 PM</p>
+<h3 class="font-headline font-bold text-title-lg">Albuterol</h3>
+<p class="text-on-surface-variant text-body-lg">2 Puffs • Inhaler</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-14 h-14 rounded-full border-2 border-outline-variant text-outline flex items-center justify-center hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+</button>
+</div>
+</div>
+<!-- Med Card 4 -->
+<div class="group relative bg-surface-container-lowest rounded-lg p-6 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-2xl bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-3xl" data-icon="medication">medication</span>
+</div>
+<div>
+<p class="text-label-md font-semibold text-primary uppercase tracking-wider">09:00 PM</p>
+<h3 class="font-headline font-bold text-title-lg">Atorvastatin</h3>
+<p class="text-on-surface-variant text-body-lg">20mg • 1 capsule</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-14 h-14 rounded-full border-2 border-outline-variant text-outline flex items-center justify-center hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Insight Card (Bento Style) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-primary text-on-primary p-8 rounded-lg space-y-4">
+<span class="material-symbols-outlined text-4xl" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+<h4 class="font-headline font-bold text-xl">Refill Alert</h4>
+<p class="opacity-90">Lisinopril is running low. You have 3 days of dosage left. Would you like to request a refill?</p>
+<button class="bg-white text-primary px-6 py-3 rounded-full font-bold text-sm w-full mt-2">Order Refill Now</button>
+</div>
+<div class="bg-surface-container-high p-8 rounded-lg flex flex-col justify-between">
+<div>
+<h4 class="font-headline font-bold text-xl text-on-surface">Weekly Streak</h4>
+<p class="text-on-surface-variant mt-2">You've taken all medications on time for 5 days straight!</p>
+</div>
+<div class="flex gap-2 mt-4">
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white"><span class="material-symbols-outlined text-sm" data-icon="done">done</span></div>
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white"><span class="material-symbols-outlined text-sm" data-icon="done">done</span></div>
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white"><span class="material-symbols-outlined text-sm" data-icon="done">done</span></div>
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white"><span class="material-symbols-outlined text-sm" data-icon="done">done</span></div>
+<div class="w-8 h-8 rounded-full bg-tertiary flex items-center justify-center text-white"><span class="material-symbols-outlined text-sm" data-icon="done">done</span></div>
+<div class="w-8 h-8 rounded-full bg-outline-variant/30 flex items-center justify-center"></div>
+<div class="w-8 h-8 rounded-full bg-outline-variant/30 flex items-center justify-center"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#f9f9fe]/80 dark:bg-slate-950/80 backdrop-blur-md rounded-t-[2rem] z-50 shadow-[0_-10px_40px_rgba(26,28,31,0.04)] border-t border-[#c1c6d7]/15">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-2xl p-2" href="#">
+<span class="material-symbols-outlined" data-icon="home_health">home_health</span>
+<span class="font-['Inter'] font-medium text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#007AFF] bg-[#d8e2ff]/30 rounded-2xl px-4 py-1 scale-110 transition-transform duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-['Inter'] font-medium text-[10px]">Meds</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-2xl p-2" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-['Inter'] font-medium text-[10px]">Vitals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-2xl p-2" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Inter'] font-medium text-[10px]">Chat</span>
+</a>
+</nav>
+<!-- Floating Action Button - Contextual for Meds Screen -->
+<button class="fixed bottom-24 right-6 w-16 h-16 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-95 z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="scan_delete">scan_delete</span>
+</button>
+</body></html>
