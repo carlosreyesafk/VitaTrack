@@ -66,33 +66,51 @@ export default function NuevoSignoScreen() {
   ];
 
   return (
-    <Screen scroll>
-      <Text className="mb-4 text-base text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-        Puedes llenar solo lo que te hayan pedido. Si no tienes un valor a mano, déjalo en blanco.
-      </Text>
+    <Screen scroll className="bg-surface">
+      <View className="pb-6 pt-8 px-2">
+        <Text className="text-xs uppercase tracking-widest text-on-surface-variant" style={{ fontFamily: "Inter_600SemiBold" }}>
+          Registro
+        </Text>
+        <Text className="mt-2 text-4xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
+          Nueva lectura
+        </Text>
+        <Text className="mt-2 text-base text-on-surface-variant leading-6" style={{ fontFamily: "Inter_400Regular" }}>
+          Completa solo los campos necesarios. Deja en blanco los que no hayas medido.
+        </Text>
+      </View>
 
-      {fields.map((f) => (
-        <View key={f.name} className="mb-4">
-          <Text className="mb-1 text-xs text-on-surface-variant">{f.label}</Text>
-          <Controller
-            control={control}
-            name={f.name}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                keyboardType={f.keyboard}
-                multiline={f.name === "notas"}
-                className="rounded-2xl bg-white px-4 py-4 text-on-surface"
-                style={{ fontFamily: "Inter_400Regular" }}
-              />
-            )}
-          />
+      <View className="px-1 gap-6 pb-10">
+        {fields.map((f) => (
+          <View key={f.name}>
+            <Text className="mb-2 ml-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
+              {f.label}
+            </Text>
+            <Controller
+              control={control}
+              name={f.name}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  keyboardType={f.keyboard}
+                  multiline={f.name === "notas"}
+                  placeholder={f.name === "notas" ? "Alguna observación..." : "0"}
+                  placeholderTextColor="#94a3b8"
+                  className={`rounded-3xl bg-white border border-outline-variant/30 px-5 text-on-surface shadow-sm ${
+                    f.name === "notas" ? "py-5 h-32 text-top" : "py-5"
+                  }`}
+                  style={{ fontFamily: "Inter_400Regular" }}
+                />
+              )}
+            />
+          </View>
+        ))}
+
+        <View className="mt-4">
+          <GradientButton title={busy ? "Guardando…" : "Guardar lectura"} disabled={busy} onPress={onSubmit} />
         </View>
-      ))}
-
-      <GradientButton title={busy ? "Guardando…" : "Guardar lectura"} disabled={busy} onPress={onSubmit} />
+      </View>
     </Screen>
   );
 }

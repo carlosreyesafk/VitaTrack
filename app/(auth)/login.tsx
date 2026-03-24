@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router } from "expo-router";
 import { Alert, Text, TextInput, View, Pressable } from "react-native";
+import { HeartPulse } from "lucide-react-native";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { Screen } from "@/components/ui/Screen";
 import { supabase, supabaseConfigured } from "@/lib/supabase";
@@ -48,75 +49,92 @@ export default function LoginScreen() {
   });
 
   return (
-    <Screen scroll>
-      <View className="pt-8">
-        <Text className="font-headline text-3xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
+    <Screen scroll className="bg-surface">
+      <View className="pt-12 items-center">
+        <View className="h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 mb-6">
+          <HeartPulse color="#2563eb" size={40} />
+        </View>
+        <Text
+          className="font-headline text-4xl text-on-surface tracking-tight"
+          style={{ fontFamily: "Manrope_800ExtraBold" }}
+        >
           VitaTrack
         </Text>
-        <Text className="mt-2 font-body text-base text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-          Tu salud crónica, con seguimiento claro y cercano.
+        <Text
+          className="mt-3 font-body text-base text-on-surface-variant text-center px-4"
+          style={{ fontFamily: "Inter_400Regular" }}
+        >
+          Tu salud crónica, con seguimiento{"\n"}claro y cercano.
         </Text>
       </View>
 
-      <View className="mt-10 gap-4">
-        <Text className="font-body text-lg text-on-surface" style={{ fontFamily: "Inter_600SemiBold" }}>
+      <View className="mt-12 gap-6 px-2">
+        <Text className="font-body text-xl text-on-surface" style={{ fontFamily: "Inter_600SemiBold" }}>
           Iniciar sesión
         </Text>
 
-        <View>
-          <Text className="mb-1 text-xs text-on-surface-variant">Correo electrónico</Text>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, onBlur, value }, fieldState }) => (
-              <>
-                <TextInput
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="tu@correo.com"
-                  placeholderTextColor="#717786"
-                  className="rounded-2xl bg-white px-4 py-4 text-on-surface"
-                  style={{ fontFamily: "Inter_400Regular" }}
-                />
-                {fieldState.error && (
-                  <Text className="mt-1 text-xs text-error">{fieldState.error.message}</Text>
-                )}
-              </>
-            )}
-          />
+        <View className="gap-5">
+          <View>
+            <Text className="mb-2 ml-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
+              Correo electrónico
+            </Text>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, onBlur, value }, fieldState }) => (
+                <>
+                  <TextInput
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder="tu@correo.com"
+                    placeholderTextColor="#94a3b8"
+                    className="rounded-3xl bg-white border border-outline-variant/30 px-5 py-5 text-on-surface shadow-sm"
+                    style={{ fontFamily: "Inter_400Regular" }}
+                  />
+                  {fieldState.error && (
+                    <Text className="mt-1 ml-1 text-xs text-error">{fieldState.error.message}</Text>
+                  )}
+                </>
+              )}
+            />
+          </View>
+
+          <View>
+            <Text className="mb-2 ml-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
+              Contraseña
+            </Text>
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, onBlur, value }, fieldState }) => (
+                <>
+                  <TextInput
+                    secureTextEntry
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder="••••••••"
+                    placeholderTextColor="#94a3b8"
+                    className="rounded-3xl bg-white border border-outline-variant/30 px-5 py-5 text-on-surface shadow-sm"
+                    style={{ fontFamily: "Inter_400Regular" }}
+                  />
+                  {fieldState.error && (
+                    <Text className="mt-1 ml-1 text-xs text-error">{fieldState.error.message}</Text>
+                  )}
+                </>
+              )}
+            />
+          </View>
         </View>
 
-        <View>
-          <Text className="mb-1 text-xs text-on-surface-variant">Contraseña</Text>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value }, fieldState }) => (
-              <>
-                <TextInput
-                  secureTextEntry
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="••••••••"
-                  placeholderTextColor="#717786"
-                  className="rounded-2xl bg-white px-4 py-4 text-on-surface"
-                  style={{ fontFamily: "Inter_400Regular" }}
-                />
-                {fieldState.error && (
-                  <Text className="mt-1 text-xs text-error">{fieldState.error.message}</Text>
-                )}
-              </>
-            )}
-          />
+        <View className="mt-4">
+          <GradientButton title={busy ? "Entrando…" : "Entrar"} disabled={busy} onPress={onSubmit} />
         </View>
 
-        <GradientButton title={busy ? "Entrando…" : "Entrar"} disabled={busy} onPress={onSubmit} />
-
-        <View className="flex-row justify-center gap-1">
+        <View className="flex-row justify-center gap-2 pt-2">
           <Text className="text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
             ¿No tienes cuenta?
           </Text>

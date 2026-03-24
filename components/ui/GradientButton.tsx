@@ -10,17 +10,22 @@ export function GradientButton({ title, className, disabled, ...rest }: Props) {
   return (
     <Pressable accessibilityRole="button" disabled={disabled} {...rest}>
       <LinearGradient
-        colors={disabled ? ["#9ca3af", "#9ca3af"] : ["#0058bc", "#0070eb"]}
+        colors={disabled ? ["#cbd5e1", "#e2e8f0"] : ["#2563eb", "#3b82f6"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          borderRadius: 24,
-          paddingVertical: 16,
-          paddingHorizontal: 24,
-          opacity: disabled ? 0.7 : 1,
+          borderRadius: 32,
+          paddingVertical: 18,
+          paddingHorizontal: 28,
+          opacity: disabled ? 0.6 : 1,
         }}
       >
-        <Text className={`text-center font-body text-base text-white ${className ?? ""}`}>{title}</Text>
+        <Text
+          className={`text-center font-body text-base text-white ${className ?? ""}`}
+          style={{ fontFamily: "Inter_600SemiBold" }}
+        >
+          {title}
+        </Text>
       </LinearGradient>
     </Pressable>
   );

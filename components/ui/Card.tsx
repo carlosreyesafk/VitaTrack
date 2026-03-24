@@ -5,8 +5,8 @@ type Props = ViewProps & { className?: string };
 export function Card({ children, className, ...rest }: Props) {
   return (
     <View
-      className={`rounded-2xl bg-white p-4 shadow-cloud ${className ?? ""}`}
-      style={{ shadowColor: "#1a1c1f", shadowOpacity: 0.04, shadowRadius: 20, shadowOffset: { width: 0, height: 12 } }}
+      className={`rounded-3xl bg-white p-5 shadow-elevated border border-outline-variant/5 ${className ?? ""}`}
+      style={{ shadowColor: "#2563eb", shadowOpacity: 0.08, shadowRadius: 30, shadowOffset: { width: 0, height: 15 } }}
       {...rest}
     >
       {children}

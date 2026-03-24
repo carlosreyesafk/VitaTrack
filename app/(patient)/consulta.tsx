@@ -42,68 +42,78 @@ export default function ConsultaRapidaScreen() {
   });
 
   return (
-    <Screen scroll>
-      <View className="pb-4 pt-2">
-        <Text className="text-2xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
+    <Screen scroll className="bg-surface">
+      <View className="pb-6 pt-8 px-2">
+        <Text className="text-xs uppercase tracking-widest text-on-surface-variant" style={{ fontFamily: "Inter_600SemiBold" }}>
+          Comunicación
+        </Text>
+        <Text className="mt-2 text-4xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
           Consulta rápida
         </Text>
-        <Text className="mt-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-          No sustituye una visita ni una emergencia. Si tienes dolor fuerte, dificultad para respirar o algo que no puede
-          esperar, busca ayuda médica de inmediato.
+        <Text className="mt-3 text-base text-on-surface-variant leading-6" style={{ fontFamily: "Inter_400Regular" }}>
+          Utiliza este espacio para dudas no urgentes. En caso de emergencia, busca ayuda médica inmediata.
         </Text>
       </View>
 
-      <View className="mb-4">
-        <Text className="mb-1 text-xs text-on-surface-variant">Asunto</Text>
-        <Controller
-          control={control}
-          name="asunto"
-          render={({ field: { onChange, onBlur, value }, fieldState }) => (
-            <>
-              <TextInput
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Ej. Dudas con la dosis de la noche"
-                placeholderTextColor="#717786"
-                className="rounded-2xl bg-white px-4 py-4 text-on-surface"
-                style={{ fontFamily: "Inter_400Regular" }}
-              />
-              {fieldState.error && (
-                <Text className="mt-1 text-xs text-error">{fieldState.error.message}</Text>
-              )}
-            </>
-          )}
-        />
-      </View>
+      <View className="px-1 gap-6 pb-10">
+        <View>
+          <Text className="mb-2 ml-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
+            Asunto
+          </Text>
+          <Controller
+            control={control}
+            name="asunto"
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder="Ej. Dudas con la dosis de la noche"
+                  placeholderTextColor="#94a3b8"
+                  className="rounded-3xl bg-white border border-outline-variant/30 px-5 py-5 text-on-surface shadow-sm"
+                  style={{ fontFamily: "Inter_400Regular" }}
+                />
+                {fieldState.error && (
+                  <Text className="mt-1 ml-1 text-xs text-error">{fieldState.error.message}</Text>
+                )}
+              </>
+            )}
+          />
+        </View>
 
-      <View className="mb-6">
-        <Text className="mb-1 text-xs text-on-surface-variant">Mensaje</Text>
-        <Controller
-          control={control}
-          name="mensaje"
-          render={({ field: { onChange, onBlur, value }, fieldState }) => (
-            <>
-              <TextInput
-                multiline
-                numberOfLines={6}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Describe qué te preocupa y desde cuándo."
-                placeholderTextColor="#717786"
-                className="rounded-2xl bg-white px-4 py-4 text-on-surface"
-                style={{ fontFamily: "Inter_400Regular", textAlignVertical: "top" }}
-              />
-              {fieldState.error && (
-                <Text className="mt-1 text-xs text-error">{fieldState.error.message}</Text>
-              )}
-            </>
-          )}
-        />
-      </View>
+        <View>
+          <Text className="mb-2 ml-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_500Medium" }}>
+            Mensaje detallado
+          </Text>
+          <Controller
+            control={control}
+            name="mensaje"
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
+              <>
+                <TextInput
+                  multiline
+                  numberOfLines={6}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder="Describe qué te preocupa y desde cuándo..."
+                  placeholderTextColor="#94a3b8"
+                  className="rounded-3xl bg-white border border-outline-variant/30 px-5 py-5 h-48 text-on-surface shadow-sm"
+                  style={{ fontFamily: "Inter_400Regular", textAlignVertical: "top" }}
+                />
+                {fieldState.error && (
+                  <Text className="mt-1 ml-1 text-xs text-error">{fieldState.error.message}</Text>
+                )}
+              </>
+            )}
+          />
+        </View>
 
-      <GradientButton title={busy ? "Enviando…" : "Enviar al médico"} disabled={busy} onPress={onSubmit} />
+        <View className="mt-4">
+          <GradientButton title={busy ? "Enviando…" : "Enviar al médico"} disabled={busy} onPress={onSubmit} />
+        </View>
+      </View>
     </Screen>
   );
 }

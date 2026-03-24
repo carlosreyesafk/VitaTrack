@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Pressable, Text, View, ActivityIndicator, Dimensions } from "react-native";
-import { Plus } from "lucide-react-native";
+import { HeartPulse, Pill, Plus } from "lucide-react-native";
+
 import { LineChart } from "react-native-chart-kit";
 import { Card } from "@/components/ui/Card";
 import { Screen } from "@/components/ui/Screen";
@@ -52,16 +53,22 @@ export default function VitalesIndexScreen() {
   }
 
   return (
-    <Screen scroll>
-      <View className="flex-row items-center justify-between pb-4 pt-2">
-        <Text className="text-2xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
-          Signos vitales
-        </Text>
+    <Screen scroll className="bg-surface">
+      <View className="pb-6 pt-8 px-2 flex-row justify-between items-end">
+        <View className="flex-1">
+          <Text className="text-xs uppercase tracking-widest text-on-surface-variant" style={{ fontFamily: "Inter_600SemiBold" }}>
+            Seguimiento
+          </Text>
+          <Text className="mt-2 text-4xl text-on-surface" style={{ fontFamily: "Manrope_800ExtraBold" }}>
+            Vitales
+          </Text>
+        </View>
         <Pressable
           onPress={() => router.push("/(patient)/vitales/nuevo")}
-          className="h-12 w-12 items-center justify-center rounded-full bg-primary-fixed"
+          className="bg-primary px-5 py-3 rounded-2xl shadow-elevated active:opacity-90"
+          style={{ shadowColor: "#2563eb", shadowOpacity: 0.2 }}
         >
-          <Plus color="#0058bc" size={26} />
+          <Text className="text-white text-sm" style={{ fontFamily: "Inter_600SemiBold" }}>+ Nuevo</Text>
         </Pressable>
       </View>
 
@@ -91,32 +98,87 @@ export default function VitalesIndexScreen() {
       )}
 
       {items.length === 0 ? (
-        <Card>
-          <Text className="text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-            Registra presión, glucosa, temperatura o pulso cuando te lo indique tu médico o si notas algo raro en casa.
+        <View className="mt-12 items-center px-8">
+          <View className="h-20 w-20 items-center justify-center rounded-3xl bg-surface-low mb-6">
+            <HeartPulse color="#94a3b8" size={40} />
+          </View>
+          <Text className="text-lg text-on-surface text-center" style={{ fontFamily: "Inter_600SemiBold" }}>
+            Sin registros aún
           </Text>
-        </Card>
+          <Text className="mt-2 text-sm text-on-surface-variant text-center leading-5" style={{ fontFamily: "Inter_400Regular" }}>
+            Toma tus medidas de presión, glucosa o pulso y regístralas para ver tu progreso.
+          </Text>
+        </View>
       ) : (
-        items.map((s) => (
-          <Card key={s.id} className="mb-3">
-            <Text className="text-on-surface" style={{ fontFamily: "Inter_600SemiBold" }}>
-              {new Date(s.registrado_en).toLocaleString("es-DO")}
-            </Text>
-            <Text className="mt-1 text-sm text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-              {s.presion_sistolica && s.presion_diastolica
-                ? `Presión ${s.presion_sistolica}/${s.presion_diastolica} mmHg`
-                : ""}
-              {s.glucosa != null ? ` · Glucosa ${s.glucosa} mg/dL` : ""}
-              {s.temperatura != null ? ` · Temp. ${s.temperatura} °C` : ""}
-              {s.pulso != null ? ` · Pulso ${s.pulso} lpm` : ""}
-            </Text>
-            {s.notas ? (
-              <Text className="mt-2 text-xs text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
-                Nota: {s.notas}
-              </Text>
-            ) : null}
-          </Card>
-        ))
+        <View className="px-1 pb-8">
+          {items.map((sg) => (
+            <Card key={sg.id} className="mb-4">
+              <View className="flex-row justify-between items-center mb-4">
+                <Text
+                  className="text-[10px] uppercase tracking-widest text-on-surface-variant"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                >
+                  {new Date(sg.registrado_en).toLocaleDateString("es-DO", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </Text>
+                <Text className="text-[10px] text-on-surface-variant" style={{ fontFamily: "Inter_400Regular" }}>
+                  {new Date(sg.registrado_en).toLocaleTimeString("es-DO", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
+              </View>
+
+              <View className="flex-row flex-wrap gap-4">
+                {sg.presion_sistolica && sg.presion_diastolica && (
+                  <View className="flex-1 min-w-[45%]">
+                    <Text
+                      className="text-[10px] uppercase text-on-surface-variant mb-1"
+                      style={{ fontFamily: "Inter_500Medium" }}
+                    >
+                      Presión
+                    </Text>
+                    <Text className="text-xl text-on-surface" style={{ fontFamily: "Manrope_700Bold" }}>
+                      {sg.presion_sistolica}/{sg.presion_diastolica}
+                    </Text>
+                    <Text className="text-[10px] text-on-surface-variant">mmHg</Text>
+                  </View>
+                )}
+                {sg.glucosa != null && (
+                  <View className="flex-1 min-w-[45%]">
+                    <Text
+                      className="text-[10px] uppercase text-on-surface-variant mb-1"
+                      style={{ fontFamily: "Inter_500Medium" }}
+                    >
+                      Glucosa
+                    </Text>
+                    <Text className="text-xl text-on-surface" style={{ fontFamily: "Manrope_700Bold" }}>
+                      {sg.glucosa}
+                    </Text>
+                    <Text className="text-[10px] text-on-surface-variant">mg/dL</Text>
+                  </View>
+                )}
+                {sg.pulso != null && (
+                  <View className="flex-1 min-w-[45%]">
+                    <Text
+                      className="text-[10px] uppercase text-on-surface-variant mb-1"
+                      style={{ fontFamily: "Inter_500Medium" }}
+                    >
+                      Pulso
+                    </Text>
+                    <Text className="text-xl text-on-surface" style={{ fontFamily: "Manrope_700Bold" }}>
+                      {sg.pulso}
+                    </Text>
+                    <Text className="text-[10px] text-on-surface-variant">lpm</Text>
+                  </View>
+                )}
+              </View>
+            </Card>
+          ))}
+        </View>
       )}
     </Screen>
   );
